@@ -5,5 +5,25 @@
     "express": "^4.21.2",
     "http-proxy-middleware": "^3.0.3",
     "nodemon": "^3.1.9"
-  }
+  },
+  "name": "migwarts-backend",
+  "version": "1.0.0",
+  "description": "미그와트 백엔드",
+  "main": "server.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0826486/Migwarts-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0826486/Migwarts-backend/issues"
+  },
+  "homepage": "https://github.com/0826486/Migwarts-backend#readme"
 }
