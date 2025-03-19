@@ -1,16 +1,17 @@
 {
   "dependencies": {
     "axios": "^1.8.2",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "http-proxy-middleware": "^3.0.3",
+    "mysql": "^2.18.1",
     "nodemon": "^3.1.9"
   },
   "name": "migwarts-backend",
   "version": "1.0.0",
   "description": "미그와트 백엔드",
   "main": "server.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
