@@ -146,3 +146,5 @@ yarn.lock
 # 특정 IDE 설정 파일 (필요 시)
 .idea/
 .vscode/
+
+.env
