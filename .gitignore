@@ -135,16 +135,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# OS 관련 (Mac, Windows)
-.DS_Store
-Thumbs.db
-
-# npm 관련 잠금 파일 (필요에 따라)
-package-lock.json
-yarn.lock
-
-# 특정 IDE 설정 파일 (필요 시)
-.idea/
-.vscode/
-
 .env
