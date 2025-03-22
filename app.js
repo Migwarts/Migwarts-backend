@@ -2,6 +2,17 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const server = require("http").createServer(app);
+const db = require("./database/db");
+const mysql = require("mysql2");
+require("dotenv").config();
+
+// const conn = mysql.createConnection({
+//   host: process.env.DB_HOST,
+//   port: process.env.DB_PORT, // 각자 다른 포트 써도 됨
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_DATABASE,
+// });
 
 app.use(cors());
 
