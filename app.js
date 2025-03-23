@@ -2,20 +2,26 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const server = require("http").createServer(app);
-const db = require("./database/db");
-const mysql = require("mysql2");
 require("dotenv").config();
-
-// const conn = mysql.createConnection({
-//   host: process.env.DB_HOST,
-//   port: process.env.DB_PORT, // 각자 다른 포트 써도 됨
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_DATABASE,
-// });
+const mysql = require("mysql2");
 
 app.use(cors());
 
+// MySQL 연결
+const conn = mysql.createConnection({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+});
+
+conn.connect((err) => {
+  if (err) console.log("DB 연결 에러:", err);
+  else console.log("Connected to the database!");
+});
+
+// 간단한 라우터
 app.get("/", (req, res) => {
   res.send("Welcome to the server! Use /api to get data.");
 });
@@ -29,5 +35,8 @@ app.use((req, res) => {
 });
 
 server.listen(8080, () => {
-  console.log("server is running on http://localhost:8080");
+  console.log("Server is running on http://localhost:8080");
 });
+
+// 연결 내보내기 (필요하면)
+module.exports = conn;
