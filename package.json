@@ -8,7 +8,8 @@
     "http-proxy-middleware": "^3.0.3",
     "mysql": "^2.18.1",
     "mysql2": "^3.14.0",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "sequelize": "^6.37.6"
   },
   "name": "migwarts-backend",
   "version": "1.0.0",
