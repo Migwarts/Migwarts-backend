@@ -3,11 +3,13 @@ const cors = require("cors");
 const mysql = require("mysql2/promise"); // ✅ 'mysql2/promise' 사용
 require("dotenv").config();
 
+const PORT = process.env.SERVER_PORT || 3001;
+
 const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -56,6 +58,6 @@ app.get("/api", (req, res) => {
 });
 
 // ✅ 서버 실행
-app.listen(5002, () => {
-  console.log("🚀 서버 실행 중 (포트 5002)");
+app.listen(PORT, () => {
+  console.log(`🚀 서버 실행 중 (포트 ${PORT})`);
 });
