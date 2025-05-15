@@ -57,6 +57,39 @@ app.get("/api", (req, res) => {
   res.send({ message: "API 정상 작동 중!" });
 });
 
+app.post("/api/post/chat", async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const { number, name, dormitory, chat } = req.body;
+
+    console.log("💬 받은 채팅 데이터:", { number, name, dormitory, chat });
+
+    if (!number || !name || !dormitory || !chat) {
+      return res.status(400).json({ message: "모든 항목을 입력해주세요." });
+    }
+
+    await conn.query(
+      "INSERT INTO students (number, name, dormitory, chat) VALUES (?, ?, ?, ?)",
+      [number, name, dormitory, chat]
+    );
+    conn.release();
+
+    res.status(201).json({ message: "채팅 저장 완료!" });
+  } catch (error) {
+    if (conn) conn.release();
+    console.error("❌ 채팅 저장 실패:", error);
+    res.status(500).json({ message: "서버 오류 발생", error: error.message });
+  }
+});
+
+app.post("/api/chat", (req, res) => {
+  console.log('chat 요청');
+  res.send({message: `${number} ${name} ${dormitory} ${chat}`})
+
+  const { number, name, dormitory, chat} = req.body;
+});
+
 // ✅ 서버 실행
 app.listen(PORT, () => {
   console.log(`🚀 서버 실행 중 (포트 ${PORT})`);
