@@ -38,7 +38,7 @@ app.post("/api/post/student", async (req, res) => {
       return res.status(400).json({ message: "학번과 이름을 입력하세요." });
     }
 
-    await conn.query("INSERT INTO students (number, name) VALUES (?, ?)", [
+    await conn.query("INSERT INTO users (number, name) VALUES (?, ?)", [
       number,
       name,
     ]);
@@ -84,10 +84,10 @@ app.post("/api/post/chat", async (req, res) => {
 });
 
 app.post("/api/chat", (req, res) => {
-  console.log('chat 요청');
-  res.send({message: `${number} ${name} ${dormitory} ${chat}`})
+  console.log("chat 요청");
+  res.send({ message: `${number} ${name} ${dormitory} ${chat}` });
 
-  const { number, name, dormitory, chat} = req.body;
+  const { number, name, dormitory, chat } = req.body;
 });
 
 // ✅ 서버 실행
