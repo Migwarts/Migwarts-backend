@@ -26,7 +26,7 @@ const pool = mysql.createPool({
 });
 
 // 🔹 학생 추가 API (POST /api/post/student)
-app.post("/api/post/student", async (req, res) => {
+app.post("/api/post/users", async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -38,13 +38,15 @@ app.post("/api/post/student", async (req, res) => {
       return res.status(400).json({ message: "학번과 이름을 입력하세요." });
     }
 
-    await conn.query("INSERT INTO users (number, name) VALUES (?, ?)", [
-      number,
-      name,
-    ]);
+    const result = await conn.query(
+      "INSERT INTO users (number, name) VALUES (?, ?)",
+      [number, name]
+    );
     conn.release();
 
-    res.status(201).json({ message: "학생 저장 성공!" });
+    const insertId = result[0]?.insertId;
+
+    res.status(201).json({ message: "학생 저장 성공!", id: insertId });
   } catch (error) {
     if (conn) conn.release();
     console.error("❌ 학생 저장 실패:", error);
