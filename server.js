@@ -59,29 +59,41 @@ app.get("/api", (req, res) => {
   res.send({ message: "API 정상 작동 중!" });
 });
 
-app.post("/api/post/chat", async (req, res) => {
+app.post("/api/post/chat/:id", async (req, res) => {
   let conn;
+  const id = req.params.id;
   try {
     conn = await pool.getConnection();
-    const { number, name, dormitory, chat } = req.body;
 
-    console.log("💬 받은 채팅 데이터:", { number, name, dormitory, chat });
+    let { dormitory, newChat } = req.body;
 
-    if (!number || !name || !dormitory || !chat) {
+    if (!id || !dormitory || !newChat) {
       return res.status(400).json({ message: "모든 항목을 입력해주세요." });
     }
 
-    await conn.query(
-      "INSERT INTO students (number, name, dormitory, chat) VALUES (?, ?, ?, ?)",
-      [number, name, dormitory, chat]
-    );
-    conn.release();
+    const [rows] = await conn.query('SELECT chat FROM chat WHERE id = ?', [id]);
+
+    if (rows.length > 0) {
+      let chatArray = rows[0].chat;
+      chatArray.push({ chat: newChat });
+      const newChatJson = JSON.stringify(chatArray);
+      await conn.query('UPDATE chat SET chat = ? WHERE id = ?', [newChatJson, id]);
+    } else {
+      // 새 유저는 채팅을 배열로 시작
+      const newChatJson = JSON.stringify([{ chat: newChat }]);
+      await conn.query('INSERT INTO chat (id, dormitory, chat) VALUES (?, ?, ?)', [
+        id,
+        dormitory,
+        newChatJson,
+      ]);
+    }
 
     res.status(201).json({ message: "채팅 저장 완료!" });
   } catch (error) {
-    if (conn) conn.release();
     console.error("❌ 채팅 저장 실패:", error);
     res.status(500).json({ message: "서버 오류 발생", error: error.message });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
