@@ -59,6 +59,41 @@ app.get("/api", (req, res) => {
   res.send({ message: "API 정상 작동 중!" });
 });
 
+app.get("/api/get/chat/:dormitory", async (req, res) => {
+  let conn;
+  const dormitory = req.params.dormitory;
+
+  try {
+    conn = await pool.getConnection();
+
+    const [rows] = await conn.query(`
+      SELECT users.id, users.number, users.name, chat.chat
+      FROM users
+      JOIN chat ON users.id = chat.id
+      WHERE chat.dormitory = ?
+    `, [dormitory]);
+
+    if (rows.length > 0) {
+      res.status(200).json({
+        message: "채팅 + 유저 정보 불러오기 성공!",
+        data: rows,
+      });
+    } else {
+      res.status(404).json({
+        message: "해당 기숙사의 채팅 데이터가 없습니다.",
+      });
+    }
+  } catch (error) {
+    console.error("❌ 채팅 데이터 불러오기 실패:", error);
+    res.status(500).json({
+      message: "서버 오류 발생",
+      error: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
 app.post("/api/post/chat/:id", async (req, res) => {
   let conn;
   const id = req.params.id;
