@@ -114,7 +114,7 @@ app.post("/api/post/chat/:id", async (req, res) => {
     const [rows] = await conn.query('SELECT chat FROM chat WHERE id = ?', [id]);
 
     if (rows.length > 0) {
-      let chatArray = JSON.parse(rows[0].chat); 
+      let chatArray = rows[0].chat;
       chatArray.push(newChat); 
       const newChatJson = JSON.stringify(chatArray);
       await conn.query('UPDATE chat SET chat = ? WHERE id = ?', [newChatJson, id]);
