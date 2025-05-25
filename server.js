@@ -74,9 +74,14 @@ app.get("/api/get/chat/:dormitory", async (req, res) => {
     `, [dormitory]);
 
     if (rows.length > 0) {
+      const parsedRows = rows.map(row => ({
+        ...row,
+        chat: typeof row.chat === 'string' ? JSON.parse(row.chat) : row.chat
+      }));
+
       res.status(200).json({
         message: "채팅 + 유저 정보 불러오기 성공!",
-        data: rows,
+        data: parsedRows,
       });
     } else {
       res.status(404).json({
@@ -109,13 +114,12 @@ app.post("/api/post/chat/:id", async (req, res) => {
     const [rows] = await conn.query('SELECT chat FROM chat WHERE id = ?', [id]);
 
     if (rows.length > 0) {
-      let chatArray = rows[0].chat;
-      chatArray.push({ chat: newChat });
+      let chatArray = JSON.parse(rows[0].chat); 
+      chatArray.push(newChat); 
       const newChatJson = JSON.stringify(chatArray);
       await conn.query('UPDATE chat SET chat = ? WHERE id = ?', [newChatJson, id]);
     } else {
-      // 새 유저는 채팅을 배열로 시작
-      const newChatJson = JSON.stringify([{ chat: newChat }]);
+      const newChatJson = JSON.stringify([newChat]); 
       await conn.query('INSERT INTO chat (id, dormitory, chat) VALUES (?, ?, ?)', [
         id,
         dormitory,
