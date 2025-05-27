@@ -66,17 +66,20 @@ app.get("/api/get/chat/:dormitory", async (req, res) => {
   try {
     conn = await pool.getConnection();
 
-    const [rows] = await conn.query(`
+    const [rows] = await conn.query(
+      `
       SELECT users.id, users.number, users.name, chat.chat
       FROM users
       JOIN chat ON users.id = chat.id
       WHERE chat.dormitory = ?
-    `, [dormitory]);
+    `,
+      [dormitory]
+    );
 
     if (rows.length > 0) {
-      const parsedRows = rows.map(row => ({
+      const parsedRows = rows.map((row) => ({
         ...row,
-        chat: typeof row.chat === 'string' ? JSON.parse(row.chat) : row.chat
+        chat: typeof row.chat === "string" ? JSON.parse(row.chat) : row.chat,
       }));
 
       res.status(200).json({
@@ -84,8 +87,9 @@ app.get("/api/get/chat/:dormitory", async (req, res) => {
         data: parsedRows,
       });
     } else {
-      res.status(404).json({
+      res.status(200).json({
         message: "해당 기숙사의 채팅 데이터가 없습니다.",
+        data: [],
       });
     }
   } catch (error) {
@@ -111,20 +115,22 @@ app.post("/api/post/chat/:id", async (req, res) => {
       return res.status(400).json({ message: "모든 항목을 입력해주세요." });
     }
 
-    const [rows] = await conn.query('SELECT chat FROM chat WHERE id = ?', [id]);
+    const [rows] = await conn.query("SELECT chat FROM chat WHERE id = ?", [id]);
 
     if (rows.length > 0) {
       let chatArray = rows[0].chat;
-      chatArray.push(newChat); 
+      chatArray.push(newChat);
       const newChatJson = JSON.stringify(chatArray);
-      await conn.query('UPDATE chat SET chat = ? WHERE id = ?', [newChatJson, id]);
-    } else {
-      const newChatJson = JSON.stringify([newChat]); 
-      await conn.query('INSERT INTO chat (id, dormitory, chat) VALUES (?, ?, ?)', [
-        id,
-        dormitory,
+      await conn.query("UPDATE chat SET chat = ? WHERE id = ?", [
         newChatJson,
+        id,
       ]);
+    } else {
+      const newChatJson = JSON.stringify([newChat]);
+      await conn.query(
+        "INSERT INTO chat (id, dormitory, chat) VALUES (?, ?, ?)",
+        [id, dormitory, newChatJson]
+      );
     }
 
     res.status(201).json({ message: "채팅 저장 완료!" });
