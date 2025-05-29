@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://ec2-13-124-135-183.ap-northeast-2.compute.amazonaws.com"],
+    origin: ["http://localhost:3000", "http://13.124.135.183"],
     credentials: true,
   })
 );
