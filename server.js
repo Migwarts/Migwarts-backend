@@ -26,7 +26,7 @@ app.use(
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  port: 3306, // 📌 실제 DB 포트
+  port: 3306,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   waitForConnections: true,
@@ -39,14 +39,14 @@ app.set("db", pool);
 
 // 🔁 요청마다 DB 연결(pool)을 req 객체에 주입 (라우터에서도 req.pool로 접근 가능)
 app.use((req, res, next) => {
-  req.pool = app.get("db");
+  req.pool = pool;
   next();
 });
 
 // 🧭 라우터 등록 (요청 경로에 따라 기능별로 분기)
 app.use("/api/post", userRouter); // ✍️ 유저 관련 API
 app.use("/api", chatRouter); // 💬 채팅 관련 API
-app.use("/api/chatbot", chatBotRouter)
+app.use("/api/chatbot", chatBotRouter);
 
 // 🧪 테스트용 라우터 (서버가 살아있는지 확인용)
 app.get("/api", (req, res) => {
