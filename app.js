@@ -8,8 +8,6 @@ const sequelize = require("./database");
 // 🧭 학생 라우터 import
 const studentRoutes = require("./routes/studentRoutes");
 
- 
-
 const app = express(); // 서버 앱 생성
 
 // ✅ JSON 형식의 body 파싱을 위한 미들웨어
